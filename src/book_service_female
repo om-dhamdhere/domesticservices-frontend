@@ -1,0 +1,76 @@
+import React from "react";
+import axios from 'axios';
+import {Component} from "react";
+import { Card, Container, Col, Row, Form, Button } from "react-bootstrap";
+// import {Link, useNavigate,RouterContext, useContext} from 'react-router-dom';
+import { useNavigate, Link} from 'react-router-dom';
+// import { RouterContext } from 'react-router-dom';
+
+
+
+
+
+class BookingFemale extends Component
+{
+    
+    constructor(props)
+    {
+        super(props);
+
+        /* Fetching all the required attributes displayed on the form */
+        this.state=
+        {
+            fname:"", lname:"", email:"", date:"", enddate:"", service:""
+        }
+    }
+
+
+    /* Setting all the data in key-value pairs */
+    changeHandler=(e)=>
+    {
+        const key=e.target.name;
+        const val=e.target.value
+        this.setState({
+            [key]:val
+            })
+    }
+
+    changeSubmit=(e)=>
+    {
+        console.log(this.state);
+        e.preventDefault();
+        axios.post('http://localhost:5000/bookings/add', this.state)  //used to add data at respective backend database
+        .then(res => console.log(res.data))
+        this.setState({fname:"", lname:"", email:"", date:"", enddate:"", service:""});   //inserting all data in database
+    }
+
+    loadScript=(src)=>{
+    return new Promise((resolve)=>{
+        const script=document.createElement("script")
+
+        script.src=src
+        script.onload=()=>{
+            resolve(true)
+        }
+
+        script.onerror=()=>{
+            resolve(false)
+        }
+
+        document.body.appendChild(script)
+
+    })
+}
+    
+    render()
+    {
+        
+        return(
+           <h1>Female</h1>
+        )
+    }
+}
+
+
+
+export default BookingFemale;
