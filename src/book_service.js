@@ -1,17 +1,25 @@
 import React from "react";
 import axios from 'axios';
-import {Component} from "react";
+import {Component, useState} from "react";
 import { Card, Container, Col, Row, Form, Button } from "react-bootstrap";
+// import Cookies from 'js-cookie';
+import { Cookies } from 'react-cookie';
 // import {Link, useNavigate,RouterContext, useContext} from 'react-router-dom';
 import { useNavigate, Link} from 'react-router-dom';
+import Payment from "./payment";
 // import { RouterContext } from 'react-router-dom';
-
-
-
 
 
 class Booking extends Component
 {
+    getNumberOfDays(startDate, endDate) {
+        const start = new Date(startDate).getTime();
+        const end = new Date(endDate).getTime();
+        const diff = end - start;
+        const days = Math.floor(diff / 86400000); // 86400000 milliseconds in a day
+        console.log(days);
+        return days;
+    }
     
     constructor(props)
     {
@@ -41,8 +49,12 @@ class Booking extends Component
         e.preventDefault();
         axios.post('http://localhost:5000/bookings/add', this.state)  //used to add data at respective backend database
         .then(res => console.log(res.data))
+        const numberOfDays = this.getNumberOfDays(this.state.date, this.state.enddate);
+        const cookies = new Cookies();
+        cookies.set('data', numberOfDays);
         this.setState({fname:"", lname:"", email:"", date:"", enddate:""});   //inserting all data in database
     }
+    
 
     loadScript=(src)=>{
     return new Promise((resolve)=>{
@@ -64,6 +76,36 @@ class Booking extends Component
     
     render()
     {
+        // const today = new Date().toISOString().slice(0, 10);
+        // const nextMonth = new Date(today.getMonth() + 1, 1);
+        // const nextMonthISO = nextMonth.toISOString().slice(0, 10);
+
+        // Important
+        // const numberOfDays = this.getNumberOfDays(this.state.date, this.state.enddate);
+        // const cookies = new Cookies();
+        // cookies.set('data', numberOfDays);
+
+        // const start = new Date(this.state.date).getTime();
+        // const end = new Date(this.state.enddate).getTime();
+        // const diff = end - start;
+        // const days = Math.floor(diff / 86400000);
+        // const cookies = new Cookies();
+        // cookies.set('data', days);
+        // const x = cookies.get('data');
+        // console.log(x);
+       
+
+        const today1 = new Date().toISOString().slice(0, 10);
+        const today2 = new Date(today1)
+        const nextMonth1 = new Date(today2.getTime());
+        nextMonth1.setMonth(today2.getMonth()+1, today2.getDate());
+        const nextMonthISO1 = nextMonth1.toISOString().slice(0,10);
+
+        const today = new Date();
+        const nextMonth = new Date(today.getTime());
+        nextMonth.setMonth(today.getMonth() + 1, today.getDate());
+        const nextMonthISO = nextMonth.toISOString().slice(0, 10);
+       
         
         return(
             <>
@@ -90,12 +132,16 @@ class Booking extends Component
                                     </Form.Group>
 
                                     <Form.Group className="mb-3">
-                                        <Form.Control type="date" name="date" value={this.state.date} onChange={this.changeHandler} placeholder="Date" required='true' />
-                                    </Form.Group>
+                                        <Form.Control type="date" name="date" min={today1} value={this.state.date} onChange={this.changeHandler} placeholder="Date" required='true' />
+                                    </Form.Group> 
+
+                                    
 
                                     <Form.Group className="mb-3">
-                                        <Form.Control type="date" name="enddate" value={this.state.enddate} onChange={this.changeHandler} placeholder="Endate" required='true'/>
+                                        <Form.Control type="date" name="enddate" min={today1} value={this.state.enddate} onChange={this.changeHandler} placeholder="Endate" required='true'/>
                                     </Form.Group>
+
+                                    
 
                                     {/* <Form.Select aria-label="Default select example" name="service" value={this.state.service} onChange={this.changeHandler}>
                                         <option>Available</option>
@@ -121,6 +167,10 @@ class Booking extends Component
                     </Col>
                 </Row>
             </Container>
+
+          {/* <div>
+        <Payment numberOfDays={numberOfDays} />  
+        </div>   */}
             </>
         )
     }

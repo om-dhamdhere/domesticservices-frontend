@@ -7,14 +7,32 @@ import logo from "./logo.png";
 import { Link } from "react-router-dom";
 import { Card, Container, Col, Row, Form, Button } from "react-bootstrap";
 import Online from "../src/new_images/online1.jpg";
+// import Cookies from "js-cookie";
+import { useCookies } from 'react-cookie';
 
 const MySwal = withReactContent(Swal);
 
-function Payment() {
+function Payment(props) {
+  // const days = props.numberOfDays;
+  // console.log(days);
+
+  // const [cookies] = useCookies(['data']);
+  // const data = cookies['data'];
+  // console.log(data);
+  const [cookies, setCookie, removeCookie] = useCookies(['data']);
+  const cookieValue = cookies.data;
+  console.log(cookieValue);
+
+  // const days = Cookies.get('days');
+  // console.log(days);
+
+
   const [service] = useState({
     name: "Driver Service",
-    price: 500,
+    price: 30*cookieValue,
   });
+
+
 
   //function to display suucesful alert message
   const handleSuccess = () => {
@@ -111,8 +129,8 @@ function Payment() {
                 name="Pay With Credit Card"
                 billingAddress
                 shippingAddress
-                amount={service.price * 100}
-                description={`Your total is Rs${service.price}`}
+                amount={service.price*100}
+                description={`Your total is Rs ${service.price}`}
                 token={handleToken}
               />
             </div>
